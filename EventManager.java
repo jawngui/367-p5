@@ -383,7 +383,7 @@ public class EventManager {
 					allVols = allVols + v + ",";
 				}
 			}
-			Character lastChar = allVols.charAt(allVols.length() - 1);
+			Character lastChar = allVols.charAt(allVols.length() - 1); // should we always just trim last , ?
 			if(lastChar.equals(','))
 			{
 				allVols = allVols.substring(0, allVols.length() - 1);

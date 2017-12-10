@@ -180,21 +180,25 @@ public class VolunteerMatch {
 
 		while(fileScn.hasNext()){
 			String curr = fileScn.nextLine().trim();
+			String type = null;
 			
 			try{
-				if (curr.startsWith("v")){
+				type = ""+curr.charAt(0);
+						
+				if (type.equalsIgnoreCase("v")){
 					String parts[] = curr.split(";");
 					String name = parts[1].trim();
 					
-					String[] dates = new String[parts.length-3];
-					for (int i=2; i<parts.length; i++){
-						dates[i-2] = parts[i].trim();
+					String[] dates = parts[2].split(","); 
+					
+					for (int i=0; i<dates.length; i++){
+						dates[i] = dates[i].trim();
 					}
 					
 					manager.addVolunteer(name, dates);
 					
 				}
-				else if (curr.startsWith("e")){
+				else if (type.equalsIgnoreCase("e")){
 					String parts[] = curr.split(";");
 					String name = parts[1].trim();
 					String date = parts[2].trim();	
@@ -209,12 +213,7 @@ public class VolunteerMatch {
 			}
 		
 		}
-			
-		
-		
 	
-
-		
 		fileScn.close();
 	}
 
@@ -236,15 +235,16 @@ public class VolunteerMatch {
 	 * NOTE : there is no additional new line at the end
 	 * 
 	 * @param manager an EventManager instance that can track volunteers and events
-	 * @param filePath the name of a file to write date toe
+	 * @param filePath the name of a file to write date to
 	 * @throws FileNotFoundException if the program cannot make a file to the filePath, it throws FileNotFoundException
 	 */
 	public static void writeToFile(EventManager manager, String filePath) throws FileNotFoundException{
 	
 		PrintWriter writer = new PrintWriter(filePath);
 
-		//TODO: implement this to handle the menu items
-
+		writer.write(manager.toStringAllVolunteers());
+		writer.write(manager.toStringAllEvents());
+		
 		writer.close();
 	}
 }
