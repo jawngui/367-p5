@@ -1,3 +1,19 @@
+/////////////////////////////////////////////////////////////////////////////
+// Semester:         CS367 Fall 2017 
+// PROJECT:          P5 Event-Volunteer Match
+// FILE:             VolunteerMatch.java
+//
+// TEAM:    P5 Pair 15
+// Authors: Matt P'ng, Jasper Nelson
+// Author1: Matt P'ng, mpng@wisc.edu, mpng, 002
+// Author2: Jasper Nelson, jnelson27@wisc.edu, jnelson27, 002
+//
+// ---------------- OTHER ASSISTANCE CREDITS 
+// Persons: NA
+// 
+// Online sources: NA
+//////////////////////////// 80 columns wide //////////////////////////////////
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
