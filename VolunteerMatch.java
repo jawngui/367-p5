@@ -1,3 +1,20 @@
+/////////////////////////////////////////////////////////////////////////////
+// Semester:         CS367 Fall 2017 
+// PROJECT:          P5 Event-Volunteer Match
+// FILE:             VolunteerMatch.java
+//
+// TEAM:    P5 Pair 15
+// Authors: Matt P'ng, Jasper Nelson
+// Author1: Matt P'ng, mpng@wisc.edu, mpng, 002
+// Author2: Jasper Nelson, jnelson27@wisc.edu, jnelson27, 002
+//
+// ---------------- OTHER ASSISTANCE CREDITS 
+// Persons: NA
+// 
+// Online sources: NA
+//////////////////////////// 80 columns wide //////////////////////////////////
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
@@ -179,24 +196,25 @@ public class VolunteerMatch {
 		Scanner fileScn = new Scanner(inputFile);
 
 		while(fileScn.hasNext()){
-			String curr = fileScn.nextLine().trim();
+			String curr = fileScn.nextLine().trim(); // Current input line to process
 			String type = null;
 			
 			try{
-				type = ""+curr.charAt(0);
+				type = ""+curr.charAt(0);  // Get type of input line
 						
 				if (type.equalsIgnoreCase("v")){
 					String parts[] = curr.split(";");
 					String name = parts[1].trim();
 					
-					String[] dates = parts[2].split(","); 
+					String[] dates = parts[2].split(","); // Get available dates array 
 					
+					// Trims each element in date array
 					for (int i=0; i<dates.length; i++){
 						dates[i] = dates[i].trim();
 					}
 					
-					manager.addVolunteer(name, dates);
-					
+					manager.addVolunteer(name, dates); // Add new volunteer to EventManager
+
 				}
 				else if (type.equalsIgnoreCase("e")){
 					String parts[] = curr.split(";");
@@ -204,11 +222,11 @@ public class VolunteerMatch {
 					String date = parts[2].trim();	
 					String limit = parts[3].trim();
 					
-					manager.addEvent(name, date, limit);
+					manager.addEvent(name, date, limit); // Add new event to EventManager
 					
-					String[] vols = parts[4].split(",");
+					String[] vols = parts[4].split(","); // Gets already matched volunteers
 					for (int i=0; i<vols.length; i++){
-						manager.createMatch(name, vols[i].trim());
+						manager.createMatch(name, vols[i].trim()); // Creates match for each already matched volunteer
 					}
 					 
 				}
