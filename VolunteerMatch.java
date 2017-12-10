@@ -208,7 +208,7 @@ public class VolunteerMatch {
 					
 					String[] vols = parts[4].split(",");
 					for (int i=0; i<vols.length; i++){
-						manager.createMatch(name, vols[i]);
+						manager.createMatch(name, vols[i].trim());
 					}
 					 
 				}
@@ -247,6 +247,7 @@ public class VolunteerMatch {
 		PrintWriter writer = new PrintWriter(filePath);
 
 		writer.write(manager.toStringAllVolunteers());
+		writer.write("\n");
 		writer.write(manager.toStringAllEvents());
 		
 		writer.close();
