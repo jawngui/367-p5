@@ -138,11 +138,18 @@ public class EventManager {
 			Event tmp = search.next();
 			if(tmp.getName().equals(name))
 			{
+				List<GraphNode> matches = tmp.getAdjacentNodes();
+				Iterator<GraphNode> mch = matches.iterator();
+				while(mch.hasNext())
+				{
+					removeMatch(tmp.getName(), mch.next().getName());
+				}
 				eventList.remove(count);
+				return true;
 			}
 			count++;
 		}
-		return true;
+		return false;
 	}
 	
 	/**
@@ -154,7 +161,26 @@ public class EventManager {
 	 */
 	public boolean removeVolunteer(String name)
 	{
-		// TODO: implement this method
+		if(findVolunteer(name) == null) return false;
+		Iterator<Volunteer> find = volunteerList.iterator();
+		int count = 0;
+		while(find.hasNext())
+		{
+			Volunteer temp = find.next();
+			if(temp.getName().equals(name))
+			{
+				List<GraphNode> events = temp.getAdjacentNodes();
+				Iterator<GraphNode> matcher = events.iterator();
+				while(matcher.hasNext())
+				{
+					removeMatch(matcher.next().getName(), name);
+				}
+				volunteerList.remove(count);
+				return true;
+			}
+			count++;
+		}
+		
 		return false;
 	}
 	
@@ -258,9 +284,18 @@ public class EventManager {
 	 * @param volunteer the name of a volunteer to be removed from match
 	 * @return true if the match existed and removed successfully, otherwise false.
 	 */
-	public boolean removeMatch(String eventName, String volunteerName){
-		// TODO: implement this method
-		return true;
+	public boolean removeMatch(String eventName, String volunteerName)
+	{
+		Event remE = findEvent(eventName);
+		Volunteer remV = findVolunteer(volunteerName);
+		if(remE.isAdjacentNode(volunteerName) && remV.isAdjacentNode(eventName))
+		{
+			remE.removeAdjacentNode(remV);
+			remV.removeAdjacentNode(remE);
+			remV.setAvailable(remE.getDate());
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -422,3 +457,4 @@ public class EventManager {
 		return allEvents.trim();
 	}
 }
+
