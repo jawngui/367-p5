@@ -69,7 +69,7 @@ public class EventManager {
 		while(eventItr.hasNext())
 		{
 			Event check = eventItr.next();
-			if(check.getName().equals(name)) return false;
+			if(check.getName().equalsIgnoreCase(name)) return false;
 		}
 		
 		Event add = new Event(name, date, limit);
@@ -95,12 +95,21 @@ public class EventManager {
 	public boolean addVolunteer(String name, String[] availableDatesStrAry)
 	{
 		if(name == null || name == "") return false;
+		if(availableDatesStrAry[0].trim().equals(""))
+		{
+			List<Integer> dates = new ArrayList<Integer>();
+			Volunteer add = new Volunteer(name, dates);
+			volunteerList.add(add);
+			Collections.sort(volunteerList);
+			return true;
+		}
 		List<Integer> dates = new ArrayList<Integer>();
 		Iterator<Volunteer> volItr = volunteerList.iterator();
 		while(volItr.hasNext())
 		{
 			Volunteer check = volItr.next();
-			if(check.getName().equals(name)) return false;
+			if(check.getName().equalsIgnoreCase(name)) return false;
+
 		}
 		for(int b = 0; b < availableDatesStrAry.length; b++)
 		{
@@ -114,9 +123,18 @@ public class EventManager {
 				return false;
 			}
 		}
-		Volunteer add = new Volunteer(name, dates);
-		volunteerList.add(add);
-		return true;
+		try
+		{
+			Volunteer add = new Volunteer(name, dates);	
+			volunteerList.add(add);
+			Collections.sort(volunteerList);
+			return true;
+		}
+		catch(IllegalArgumentException e)
+		{
+			return false;
+		}
+		
 	}
 	
 	/** 
@@ -136,7 +154,7 @@ public class EventManager {
 		while(search.hasNext())
 		{
 			Event tmp = search.next();
-			if(tmp.getName().equals(name))
+			if(tmp.getName().equalsIgnoreCase(name))
 			{
 				List<GraphNode> matches = tmp.getAdjacentNodes();
 				Iterator<GraphNode> mch = matches.iterator();
@@ -145,6 +163,7 @@ public class EventManager {
 					removeMatch(tmp.getName(), mch.next().getName());
 				}
 				eventList.remove(count);
+				Collections.sort(eventList);
 				return true;
 			}
 			count++;
@@ -167,7 +186,7 @@ public class EventManager {
 		while(find.hasNext())
 		{
 			Volunteer temp = find.next();
-			if(temp.getName().equals(name))
+			if(temp.getName().equalsIgnoreCase(name))
 			{
 				List<GraphNode> events = temp.getAdjacentNodes();
 				Iterator<GraphNode> matcher = events.iterator();
@@ -176,6 +195,7 @@ public class EventManager {
 					removeMatch(matcher.next().getName(), name);
 				}
 				volunteerList.remove(count);
+				Collections.sort(volunteerList);
 				return true;
 			}
 			count++;
@@ -196,7 +216,7 @@ public class EventManager {
 		while(eventMatch.hasNext())
 		{
 			Event check = eventMatch.next();
-			if(check.getName().equals(name))
+			if(check.getName().equalsIgnoreCase(name))
 			{
 				return check;
 			}
@@ -216,7 +236,7 @@ public class EventManager {
 		while(volMatch.hasNext())
 		{
 			Volunteer check = volMatch.next();
-			if(check.getName().equals(name))
+			if(check.getName().equalsIgnoreCase(name))
 			{
 				return check;
 			}
@@ -322,6 +342,7 @@ public class EventManager {
 			Event toDisp = dispCheck.next();
 			System.out.printf(Resource.STR_DISPLAY_EVENT_PRINT_FORMAT, toDisp.getName(), toDisp.getDate(), toDisp.getLimit());
 			List<GraphNode> vols = toDisp.getAdjacentNodes();
+			Collections.sort(vols);
 			Iterator<GraphNode> stepper = vols.iterator();
 			int count = 1;
 			if(stepper.hasNext())
@@ -371,10 +392,18 @@ public class EventManager {
 					str = str + i + ",";
 				}
 			}
-			str = str.substring(0, str.length()-1);
+			try
+			{
+				str = str.substring(0, str.length()-1);
+			}
+			catch(StringIndexOutOfBoundsException e)
+			{
+				
+			}
 			System.out.printf(Resource.STR_VOLUNTEER_PRINT_FORMAT, toDisp.getName(), str);
 			
 			List<GraphNode> events = toDisp.getAdjacentNodes();
+			Collections.sort(events);
 			Iterator<GraphNode> eveItr = events.iterator();
 			if(eveItr.hasNext())
 			{
@@ -410,10 +439,19 @@ public class EventManager {
 		String allVols = "";
 		for(Volunteer check : volunteerList)
 		{
+			List<Integer> eventDate = new ArrayList<Integer>();
+			List<GraphNode> matches = check.getAdjacentNodes();
+			Iterator<GraphNode> dates = matches.iterator();
+			while(dates.hasNext())
+			{
+				GraphNode temp = dates.next();
+				Event str = findEvent(temp.getName());
+				eventDate.add(str.getDate());
+			}
 			allVols = allVols + "v;" + check.getName() + ";";
 			for(int v = 1; v <= 30; v++)
 			{
-				if(check.isAvailable(v))
+				if(check.isAvailable(v) || eventDate.contains(v))
 				{
 					allVols = allVols + v + ",";
 				}
@@ -446,13 +484,19 @@ public class EventManager {
 		{
 			allEvents = allEvents + "e;" + check.getName() + ";" + check.getDate() + ";" + check.getLimit() + ";";
 			List<GraphNode> volunteers = check.getAdjacentNodes();
+			Collections.sort(volunteers);
 			Iterator<GraphNode> itr = volunteers.iterator();
 			while(itr.hasNext())
 			{
 				GraphNode vol = itr.next();
-				allEvents = allEvents + vol.getName() + ";";
+				allEvents = allEvents + vol.getName() + ",";
+			}
+			if(allEvents.charAt(allEvents.length()-1) == ',')
+			{
+				allEvents = allEvents.substring(0, allEvents.length()-1);
 			}
 			allEvents = allEvents + "\n";
+			
 		}
 		return allEvents.trim();
 	}
