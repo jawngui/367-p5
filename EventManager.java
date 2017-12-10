@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Semester:         CS367 Fall 2017 
 // PROJECT:          P5 Event-Volunteer Match
-// FILE:             VolunteerMatch.java
+// FILE:             EventManager.java
 //
 // TEAM:    P5 Pair 15
 // Authors: Matt P'ng, Jasper Nelson
