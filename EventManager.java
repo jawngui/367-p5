@@ -128,8 +128,20 @@ public class EventManager {
 	 * @param name the name of the event to be removed
 	 * @return true if the event existed and removed successfully, otherwise false
 	 */
-	public boolean removeEvent(String name) {
-		//TODO: implement this method
+	public boolean removeEvent(String name) 
+	{
+		if(findEvent(name) == null) return false;
+		Iterator<Event> search = eventList.iterator();
+		int count = 0;
+		while(search.hasNext())
+		{
+			Event tmp = search.next();
+			if(tmp.getName().equals(name))
+			{
+				eventList.remove(count);
+			}
+			count++;
+		}
 		return true;
 	}
 	
@@ -140,7 +152,8 @@ public class EventManager {
 	 * @param name the name of the volunteer to be removed
 	 * @return true if volunteer existed and removed successfully, otherwise false
 	 */
-	public boolean removeVolunteer(String name){
+	public boolean removeVolunteer(String name)
+	{
 		// TODO: implement this method
 		return false;
 	}
@@ -210,8 +223,22 @@ public class EventManager {
 		Volunteer checkV = findVolunteer(volunteerName);
 		if(checkE == null || checkV == null) return false;
 		
+		if(checkE.getAdjacentNodes().size() < checkE.getLimit())
+		{
+			if(checkV.isAvailable(checkE.getDate()))
+			{
+				List<GraphNode> eventVols = checkE.getAdjacentNodes();
+				eventVols.add(checkV);
+				List<GraphNode> volsEvents = checkV.getAdjacentNodes();
+				volsEvents.add(checkE);
+				checkV.setUnavailable(checkE.getDate());
+				return true;
+			}
+		}
 		
-		return true;
+		
+		
+		return false;
 	}
 	
 	/**
@@ -247,8 +274,36 @@ public class EventManager {
 	 * Resource.STR_ERROR_DISPLAY_EVENT_FAILED
 	 * Resource.STR_DISPLAY_ALL_EVENTS_PRINT_FORMAT
 	 */
-	public void displayAllEvents(){
-		// TODO: implement this method
+	public void displayAllEvents()
+	{
+		if(eventList.size() == 0)
+		{
+			System.out.print(Resource.STR_ERROR_DISPLAY_EVENT_FAILED);
+		}
+		System.out.printf(Resource.STR_DISPLAY_ALL_EVENTS_PRINT_FORMAT, eventList.size());
+		Iterator<Event> dispCheck = eventList.iterator();
+		while(dispCheck.hasNext())
+		{
+			Event toDisp = dispCheck.next();
+			System.out.printf(Resource.STR_DISPLAY_EVENT_PRINT_FORMAT, toDisp.getName(), toDisp.getDate(), toDisp.getLimit());
+			List<GraphNode> vols = toDisp.getAdjacentNodes();
+			Iterator<GraphNode> stepper = vols.iterator();
+			int count = 1;
+			if(stepper.hasNext())
+			{
+				while(stepper.hasNext())
+				{
+					GraphNode temp = stepper.next();
+					System.out.printf(Resource.STR_DISPLAY_EVENT_VOLUNTEERS_PRINT_FORMAT, count, temp.getName());
+					count++;
+				}
+			}
+			else
+			{
+				System.out.print(Resource.STR_DISPLAY_NO_MATCHES);
+			}
+			
+		}
 	}
 	
 	/**	 
@@ -264,7 +319,42 @@ public class EventManager {
 	 */
 	public void displayAllVolunteers()
 	{
-		
+		if(volunteerList.size() == 0)
+		{
+			System.out.print(Resource.STR_ERROR_DISPLAY_VOLUNTEER_FAILED);
+		}
+		System.out.printf(Resource.STR_DISPLAY_ALL_VOLUNTEERS_PRINT_FORMAT, volunteerList.size());
+		Iterator<Volunteer> volItr = volunteerList.iterator();
+		while(volItr.hasNext())
+		{
+			Volunteer toDisp = volItr.next();
+			String str = "";
+			for(int i = 1; i < 31; i++)
+			{
+				if(toDisp.isAvailable(i))
+				{
+					str = str + i + ",";
+				}
+			}
+			str = str.substring(0, str.length()-1);
+			System.out.printf(Resource.STR_VOLUNTEER_PRINT_FORMAT, toDisp.getName(), str);
+			
+			List<GraphNode> events = toDisp.getAdjacentNodes();
+			Iterator<GraphNode> eveItr = events.iterator();
+			if(eveItr.hasNext())
+			{
+				while(eveItr.hasNext())
+				{
+					GraphNode hold = eveItr.next();
+					Event hold2 = findEvent(hold.getName());
+					System.out.printf(Resource.STR_VOLUNTEER_EVENT_PRINT_FORMAT, hold2.getName(), hold2.getDate());
+				}
+			}
+			else
+			{
+				System.out.print(Resource.STR_DISPLAY_NO_MATCHES);
+			}
+		}
 	}
 	
 	/**
