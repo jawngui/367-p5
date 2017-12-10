@@ -261,7 +261,9 @@ public class EventManager {
 				return true;
 			}
 		}
-	
+		
+		
+		
 		return false;
 	}
 	
@@ -416,7 +418,7 @@ public class EventManager {
 					allVols = allVols + v + ",";
 				}
 			}
-			Character lastChar = allVols.charAt(allVols.length() - 1); // should we always just trim last , ?
+			Character lastChar = allVols.charAt(allVols.length() - 1);
 			if(lastChar.equals(','))
 			{
 				allVols = allVols.substring(0, allVols.length() - 1);
@@ -454,9 +456,4 @@ public class EventManager {
 		}
 		return allEvents.trim();
 	}
-<<<<<<< HEAD
 }
-=======
-}
-
->>>>>>> c234261376e93a3fe7dc2890aef8d7db5ff686e7
