@@ -106,7 +106,8 @@ public class VolunteerMatch {
 					String volunteerName = scn.nextLine().trim();
 
 					if(!manager.createMatch(eventName, volunteerName)){
-						System.out.format(Resource.STR_ERROR_MATCH_CREATE_FAILED_PRINT_FORMAT, eventName, volunteerName);
+						System.out.format(Resource.STR_ERROR_MATCH_CREATE_FAILED_PRINT_FORMAT, 
+								eventName, volunteerName);
 					}
 
 					break;
@@ -121,7 +122,8 @@ public class VolunteerMatch {
 					String volunteerName = scn.nextLine().trim();
 
 					if(!manager.removeMatch(eventName, volunteerName)){
-						System.out.format(Resource.STR_ERROR_MATCH_REMOVE_FAILED_PRINT_FORMAT, eventName, volunteerName);
+						System.out.format(Resource.STR_ERROR_MATCH_REMOVE_FAILED_PRINT_FORMAT, 
+								eventName, volunteerName);
 					}
 					break;
 				}
@@ -183,7 +185,8 @@ public class VolunteerMatch {
 	 *   E;birthday  ; 23; 10;
 	 * 
 	 * NOTE1 : ignore lines that have invalid format and continue to parse
-	 * NOTE2 : there is no certain order for v/e lines but matched volunteers for an event must be added before adding the event.
+	 * NOTE2 : there is no certain order for v/e lines but matched volunteers for an event must be added before 
+	 * adding the event.
 	 * 
 	 * @see P5 description on Canvas
 	 * 
@@ -195,28 +198,32 @@ public class VolunteerMatch {
 		File inputFile = new File(filePath);
 		Scanner fileScn = new Scanner(inputFile);
 
-		while(fileScn.hasNext()){
+		while(fileScn.hasNext())
+		{
 			String curr = fileScn.nextLine().trim(); // Current input line to process
 			String type = null;
 			
 			try{
 				type = ""+curr.charAt(0);  // Get type of input line
 						
-				if (type.equalsIgnoreCase("v")){
+				if (type.equalsIgnoreCase("v"))
+				{ // If type volunteer input line
 					String parts[] = curr.split(";");
 					String name = parts[1].trim();
 					
 					String[] dates = parts[2].split(","); // Get available dates array 
 					
 					// Trims each element in date array
-					for (int i=0; i<dates.length; i++){
+					for (int i=0; i<dates.length; i++)
+					{
 						dates[i] = dates[i].trim();
 					}
 					
 					manager.addVolunteer(name, dates); // Add new volunteer to EventManager
 
 				}
-				else if (type.equalsIgnoreCase("e")){
+				else if (type.equalsIgnoreCase("e"))
+				{ // If type event input line
 					String parts[] = curr.split(";");
 					String name = parts[1].trim();
 					String date = parts[2].trim();	
@@ -225,17 +232,17 @@ public class VolunteerMatch {
 					manager.addEvent(name, date, limit); // Add new event to EventManager
 					
 					String[] vols = parts[4].split(","); // Gets already matched volunteers
-					for (int i=0; i<vols.length; i++){
+					for (int i=0; i<vols.length; i++)
+					{
 						manager.createMatch(name, vols[i].trim()); // Creates match for each already matched volunteer
 					}
-					 
+					
 				}
-			}catch(Exception e){
-				continue;
+			}catch(Exception e)
+			{
+				continue; // If bad input, continue to next input line
 			}
-		
 		}
-	
 		fileScn.close();
 	}
 
@@ -262,8 +269,9 @@ public class VolunteerMatch {
 	 */
 	public static void writeToFile(EventManager manager, String filePath) throws FileNotFoundException{
 	
-		PrintWriter writer = new PrintWriter(filePath);
+		PrintWriter writer = new PrintWriter(filePath); 
 
+		// Writes all volunteers and events to file in specified format
 		writer.write(manager.toStringAllVolunteers());
 		writer.write("\n");
 		writer.write(manager.toStringAllEvents());
