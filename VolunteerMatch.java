@@ -203,10 +203,14 @@ public class VolunteerMatch {
 					String name = parts[1].trim();
 					String date = parts[2].trim();	
 					String limit = parts[3].trim();
-//					for (int i=4; i<parts.length; i++){
-//						this will handle the already matched volunteers in input lines
-//					}
-					manager.addEvent(name, date, limit); 
+					
+					manager.addEvent(name, date, limit);
+					
+					String[] vols = parts[4].split(",");
+					for (int i=0; i<vols.length; i++){
+						manager.createMatch(name, vols[i]);
+					}
+					 
 				}
 			}catch(Exception e){
 				continue;

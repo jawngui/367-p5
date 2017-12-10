@@ -235,9 +235,7 @@ public class EventManager {
 				return true;
 			}
 		}
-		
-		
-		
+	
 		return false;
 	}
 	
