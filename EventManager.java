@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Semester:         CS367 Fall 2017 
-// PROJECT:          P5 Event-Volunteer Match
-// FILE:             EventManager.java
+// PROJECT:          P5
+// FILE:             EventMatch.java
 //
 // TEAM:    P5 Pair 15
 // Authors: Matt P'ng, Jasper Nelson
@@ -13,7 +13,6 @@
 // 
 // Online sources: NA
 //////////////////////////// 80 columns wide //////////////////////////////////
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -69,7 +68,7 @@ public class EventManager {
 		if(name == null || name == "") return false;
 		int date = 0;
 		int limit = 0;
-		try
+		try //parse strings to int
 		{
 			date = Integer.parseInt(dateStr);
 			limit = Integer.parseInt(limitStr);
@@ -78,18 +77,18 @@ public class EventManager {
 		{
 			return false;
 		}
-		if(date < 1 || date > 30) return false;
+		if(date < 1 || date > 30) return false; 
 		if(limit < 1) return false;
 		
 		Iterator<Event> eventItr = eventList.iterator();
-		while(eventItr.hasNext())
+		while(eventItr.hasNext()) //checking to make sure the event doesn't already exist
 		{
 			Event check = eventItr.next();
 			if(check.getName().equalsIgnoreCase(name)) return false;
 		}
 		
-		Event add = new Event(name, date, limit);
-		eventList.add(add);
+		Event add = new Event(name, date, limit); //if the event meets all conditions, add to the list
+		eventList.add(add);						  //and sort to retain alphabetical order
 		Collections.sort(eventList);
 		return true;
 	}
@@ -111,23 +110,23 @@ public class EventManager {
 	public boolean addVolunteer(String name, String[] availableDatesStrAry)
 	{
 		if(name == null || name == "") return false;
-		if(availableDatesStrAry[0].trim().equals(""))
+		if(availableDatesStrAry[0].trim().equals(""))//check to see if the available dates array is empty
 		{
-			List<Integer> dates = new ArrayList<Integer>();
-			Volunteer add = new Volunteer(name, dates);
+			List<Integer> dates = new ArrayList<Integer>(); //if empty, create new volunteer with empty ArrayList
+			Volunteer add = new Volunteer(name, dates);		//being passed in as the dates list.  Sort to retain order
 			volunteerList.add(add);
 			Collections.sort(volunteerList);
 			return true;
 		}
 		List<Integer> dates = new ArrayList<Integer>();
 		Iterator<Volunteer> volItr = volunteerList.iterator();
-		while(volItr.hasNext())
+		while(volItr.hasNext()) //check to see if volunteer already exists
 		{
 			Volunteer check = volItr.next();
 			if(check.getName().equalsIgnoreCase(name)) return false;
 
 		}
-		for(int b = 0; b < availableDatesStrAry.length; b++)
+		for(int b = 0; b < availableDatesStrAry.length; b++) //create list of integers
 		{
 			try
 			{
@@ -139,7 +138,7 @@ public class EventManager {
 				return false;
 			}
 		}
-		try
+		try //if all criteria are met, a new volunteer is created, and the list is sorted
 		{
 			Volunteer add = new Volunteer(name, dates);	
 			volunteerList.add(add);
@@ -166,19 +165,19 @@ public class EventManager {
 	{
 		if(findEvent(name) == null) return false;
 		Iterator<Event> search = eventList.iterator();
-		int count = 0;
+		int count = 0; //tracks the position of the iterator
 		while(search.hasNext())
 		{
 			Event tmp = search.next();
-			if(tmp.getName().equalsIgnoreCase(name))
+			if(tmp.getName().equalsIgnoreCase(name)) //if event is found
 			{
 				List<GraphNode> matches = tmp.getAdjacentNodes();
 				Iterator<GraphNode> mch = matches.iterator();
-				while(mch.hasNext())
+				while(mch.hasNext())//removes any matches
 				{
 					removeMatch(tmp.getName(), mch.next().getName());
 				}
-				eventList.remove(count);
+				eventList.remove(count); //event is removed and the list is sorted
 				Collections.sort(eventList);
 				return true;
 			}
@@ -198,19 +197,19 @@ public class EventManager {
 	{
 		if(findVolunteer(name) == null) return false;
 		Iterator<Volunteer> find = volunteerList.iterator();
-		int count = 0;
+		int count = 0; //tracks the index of the iterator
 		while(find.hasNext())
 		{
 			Volunteer temp = find.next();
-			if(temp.getName().equalsIgnoreCase(name))
+			if(temp.getName().equalsIgnoreCase(name)) //check for match
 			{
 				List<GraphNode> events = temp.getAdjacentNodes();
 				Iterator<GraphNode> matcher = events.iterator();
-				while(matcher.hasNext())
+				while(matcher.hasNext()) //removes any matches made
 				{
 					removeMatch(matcher.next().getName(), name);
 				}
-				volunteerList.remove(count);
+				volunteerList.remove(count); //item is removed from the list
 				Collections.sort(volunteerList);
 				return true;
 			}
@@ -229,10 +228,10 @@ public class EventManager {
 	public Event findEvent(String name)
 	{
 		Iterator<Event> eventMatch = eventList.iterator();
-		while(eventMatch.hasNext())
+		while(eventMatch.hasNext()) //iterate through the event List
 		{
 			Event check = eventMatch.next();
-			if(check.getName().equalsIgnoreCase(name))
+			if(check.getName().equalsIgnoreCase(name))//if the event is found, returns the event
 			{
 				return check;
 			}
@@ -249,10 +248,10 @@ public class EventManager {
 	public Volunteer findVolunteer(String name)
 	{
 		Iterator<Volunteer> volMatch = volunteerList.iterator();
-		while(volMatch.hasNext())
+		while(volMatch.hasNext()) //iterate through the volunteer list
 		{
 			Volunteer check = volMatch.next();
-			if(check.getName().equalsIgnoreCase(name))
+			if(check.getName().equalsIgnoreCase(name)) //if the item is found, it is returned
 			{
 				return check;
 			}
@@ -281,18 +280,18 @@ public class EventManager {
 	 */
 	public boolean createMatch(String eventName, String volunteerName)
 	{
-		Event checkE = findEvent(eventName);
+		Event checkE = findEvent(eventName); //retrieve references of both the volunteer and the event
 		Volunteer checkV = findVolunteer(volunteerName);
-		if(checkE == null || checkV == null) return false;
+		if(checkE == null || checkV == null) return false; //check to make sure the event and volunteer exist
 		
-		if(checkE.getAdjacentNodes().size() < checkE.getLimit())
+		if(checkE.getAdjacentNodes().size() < checkE.getLimit()) //make sure the event isn't over it's volunteer limit
 		{
-			if(checkV.isAvailable(checkE.getDate()))
+			if(checkV.isAvailable(checkE.getDate())) // make sure the volunteer is available
 			{
 				List<GraphNode> eventVols = checkE.getAdjacentNodes();
-				eventVols.add(checkV);
+				eventVols.add(checkV); // add the volunteer to the event's adjacent nodes
 				List<GraphNode> volsEvents = checkV.getAdjacentNodes();
-				volsEvents.add(checkE);
+				volsEvents.add(checkE); //add the event to the volunteer's adjacent nodes
 				checkV.setUnavailable(checkE.getDate());
 				return true;
 			}
@@ -300,7 +299,7 @@ public class EventManager {
 		
 		
 		
-		return false;
+		return false; // returns false if anything goes wrong
 	}
 	
 	/**
@@ -322,13 +321,13 @@ public class EventManager {
 	 */
 	public boolean removeMatch(String eventName, String volunteerName)
 	{
-		Event remE = findEvent(eventName);
+		Event remE = findEvent(eventName); //get references for both the event and the volunteer
 		Volunteer remV = findVolunteer(volunteerName);
 		if(remE.isAdjacentNode(volunteerName) && remV.isAdjacentNode(eventName))
-		{
+		{ //make sure the nodes are adjacent
 			remE.removeAdjacentNode(remV);
-			remV.removeAdjacentNode(remE);
-			remV.setAvailable(remE.getDate());
+			remV.removeAdjacentNode(remE);//remove both of the nodes from the adjacency list
+			remV.setAvailable(remE.getDate()); //set the volunteer as available
 			return true;
 		}
 		return false;
@@ -347,26 +346,28 @@ public class EventManager {
 	 */
 	public void displayAllEvents()
 	{
-		if(eventList.size() == 0)
+		if(eventList.size() == 0) //print the error message if there are no events
 		{
 			System.out.print(Resource.STR_ERROR_DISPLAY_EVENT_FAILED);
 		}
 		System.out.printf(Resource.STR_DISPLAY_ALL_EVENTS_PRINT_FORMAT, eventList.size());
 		Iterator<Event> dispCheck = eventList.iterator();
-		while(dispCheck.hasNext())
+		while(dispCheck.hasNext()) //iterates through each event
 		{
 			Event toDisp = dispCheck.next();
 			System.out.printf(Resource.STR_DISPLAY_EVENT_PRINT_FORMAT, toDisp.getName(), toDisp.getDate(), toDisp.getLimit());
+			//print each event's info
 			List<GraphNode> vols = toDisp.getAdjacentNodes();
 			Collections.sort(vols);
 			Iterator<GraphNode> stepper = vols.iterator();
 			int count = 1;
-			if(stepper.hasNext())
+			if(stepper.hasNext())//iterates through each of the adjacent nodes
 			{
 				while(stepper.hasNext())
 				{
 					GraphNode temp = stepper.next();
-					System.out.printf(Resource.STR_DISPLAY_EVENT_VOLUNTEERS_PRINT_FORMAT, count, temp.getName());
+					System.out.printf(Resource.STR_DISPLAY_EVENT_VOLUNTEERS_PRINT_FORMAT, count, temp.getName()); 
+					//prints the volunteer's information
 					count++;
 				}
 			}
@@ -391,24 +392,24 @@ public class EventManager {
 	 */
 	public void displayAllVolunteers()
 	{
-		if(volunteerList.size() == 0)
+		if(volunteerList.size() == 0) //if list is empty print the error message
 		{
 			System.out.print(Resource.STR_ERROR_DISPLAY_VOLUNTEER_FAILED);
 		}
 		System.out.printf(Resource.STR_DISPLAY_ALL_VOLUNTEERS_PRINT_FORMAT, volunteerList.size());
 		Iterator<Volunteer> volItr = volunteerList.iterator();
-		while(volItr.hasNext())
+		while(volItr.hasNext()) //iterates through each volunteer
 		{
 			Volunteer toDisp = volItr.next();
 			String str = "";
-			for(int i = 1; i < 31; i++)
+			for(int i = 1; i < 31; i++) //create string of all available dates for each volunteer
 			{
 				if(toDisp.isAvailable(i))
 				{
 					str = str + i + ",";
 				}
 			}
-			try
+			try //truncates the string so there is no comma at the end
 			{
 				str = str.substring(0, str.length()-1);
 			}
@@ -416,18 +417,18 @@ public class EventManager {
 			{
 				
 			}
-			System.out.printf(Resource.STR_VOLUNTEER_PRINT_FORMAT, toDisp.getName(), str);
+			System.out.printf(Resource.STR_VOLUNTEER_PRINT_FORMAT, toDisp.getName(), str); //prints the data
 			
 			List<GraphNode> events = toDisp.getAdjacentNodes();
 			Collections.sort(events);
 			Iterator<GraphNode> eveItr = events.iterator();
-			if(eveItr.hasNext())
+			if(eveItr.hasNext()) //iterates through each adjacent node
 			{
 				while(eveItr.hasNext())
 				{
 					GraphNode hold = eveItr.next();
 					Event hold2 = findEvent(hold.getName());
-					System.out.printf(Resource.STR_VOLUNTEER_EVENT_PRINT_FORMAT, hold2.getName(), hold2.getDate());
+					System.out.printf(Resource.STR_VOLUNTEER_EVENT_PRINT_FORMAT, hold2.getName(), hold2.getDate()); //prints the node's data
 				}
 			}
 			else
@@ -458,7 +459,7 @@ public class EventManager {
 			List<Integer> eventDate = new ArrayList<Integer>();
 			List<GraphNode> matches = check.getAdjacentNodes();
 			Iterator<GraphNode> dates = matches.iterator();
-			while(dates.hasNext())
+			while(dates.hasNext())//iterates through the adjacent nodes and creates a list of their dates
 			{
 				GraphNode temp = dates.next();
 				Event str = findEvent(temp.getName());
@@ -467,13 +468,13 @@ public class EventManager {
 			allVols = allVols + "v;" + check.getName() + ";";
 			for(int v = 1; v <= 30; v++)
 			{
-				if(check.isAvailable(v) || eventDate.contains(v))
+				if(check.isAvailable(v) || eventDate.contains(v)) //creates a list of all available dates
 				{
 					allVols = allVols + v + ",";
 				}
 			}
-			Character lastChar = allVols.charAt(allVols.length() - 1);
-			if(lastChar.equals(','))
+			Character lastChar = allVols.charAt(allVols.length() - 1); 
+			if(lastChar.equals(','))// removes the final ','
 			{
 				allVols = allVols.substring(0, allVols.length() - 1);
 			}
@@ -502,12 +503,12 @@ public class EventManager {
 			List<GraphNode> volunteers = check.getAdjacentNodes();
 			Collections.sort(volunteers);
 			Iterator<GraphNode> itr = volunteers.iterator();
-			while(itr.hasNext())
+			while(itr.hasNext()) //iterate through the volunteers and print their information
 			{
 				GraphNode vol = itr.next();
 				allEvents = allEvents + vol.getName() + ",";
 			}
-			if(allEvents.charAt(allEvents.length()-1) == ',')
+			if(allEvents.charAt(allEvents.length()-1) == ',') //removes the last ','
 			{
 				allEvents = allEvents.substring(0, allEvents.length()-1);
 			}
